@@ -80,16 +80,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+def _env(k: str) -> str:
+    return (os.getenv(k) or "").strip()
+
+DB_ENGINE = (_env("DB_ENGINE") or "django.db.backends.sqlite3").strip()
+DB_NAME = (
+    (_env("DB_NAME") or "").strip()
+    or (_env("SQLITE_PATH") or "").strip()
+    or str((BASE_DIR / (_env("SQLITE_NAME") or "db.sqlite3")).resolve())
+)
+
 DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER", ""),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-            "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-            "PORT": os.getenv("POSTGRES_PORT", "5432"),
-        }
+    "default": {
+        "ENGINE": DB_ENGINE,
+        "NAME": DB_NAME,
+        "USER": (_env("DB_USER") or "").strip(),
+        "PASSWORD": (_env("DB_PASSWORD") or "").strip(),
+        "HOST": (_env("DB_HOST") or "localhost").strip(),
+        "PORT": (_env("DB_PORT") or "5432").strip(),
     }
+}
 
 
 # Password validation
