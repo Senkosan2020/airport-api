@@ -1,5 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import (
     Airplane,
@@ -76,6 +78,35 @@ class FlightViewSet(viewsets.ModelViewSet):
         'arrival_time'
     ]
     ordering_fields = ['departure_time', 'arrival_time', 'id']
+
+    @action(detail=True, methods=['get'], url_path='seats')
+    def seats(self, request, pk=None):
+        flight = self.get_object()
+        rows = flight.airplane.rows
+        seats_in_row = flight.airplane.seats_in_row
+
+        occupied = set(flight.tickets.values_list('row', 'seat'))
+
+        seat_map = []
+        for row_number in range(1, rows + 1):
+            row_seats = []
+            for seat_number in range(1, seats_in_row + 1):
+                is_taken = (row_number, seat_number) in occupied
+                row_seats.append(
+                    {
+                        'row': row_number,
+                        'seat': seat_number,
+                        'taken': is_taken
+                    }
+                )
+            seat_map.append({'row': row_number, 'seats': row_seats})
+
+        return Response({
+            'flight': flight.id,
+            'rows': rows,
+            'seats_in_row': seats_in_row,
+            'seat_map': seat_map,
+        })
 
 
 class OrderViewSet(viewsets.ModelViewSet):
