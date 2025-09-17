@@ -1,7 +1,9 @@
+from django.db import IntegrityError, transaction
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
+from rest_framework import filters, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import (
     Airplane,
@@ -22,6 +24,7 @@ from .serializers import (
     OrderSerializer,
     RouteSerializer,
     TicketSerializer,
+    BookSeatSerializer,
 )
 
 
@@ -107,6 +110,57 @@ class FlightViewSet(viewsets.ModelViewSet):
             'seats_in_row': seats_in_row,
             'seat_map': seat_map,
         })
+
+    @action(
+        detail=True,
+        methods=['post'],
+        url_path='book',
+        permission_classes=[IsAuthenticated],
+    )
+    def book(self, request, pk=None):
+        flight = self.get_object()
+        serializer = BookSeatSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        row = serializer.validated_data['row']
+        seat = serializer.validated_data['seat']
+
+        total_rows = flight.airplane.rows
+        seats_per_row = flight.airplane.seats_in_row
+
+        if row > total_rows or seat > seats_per_row:
+            return Response(
+                {'detail': 'row/seat exceeds airplane capacity'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            with transaction.atomic():
+                order = Order.objects.create(user=request.user)
+                ticket = Ticket.objects.create(
+                    flight=flight,
+                    order=order,
+                    row=row,
+                    seat=seat,
+                )
+        except IntegrityError:
+            return Response(
+                {'detail': 'seat already taken for this flight'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {
+                'order': order.id,
+                'flight': flight.id,
+                'ticket': {
+                    'id': ticket.id,
+                    'row': ticket.row,
+                    'seat': ticket.seat
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class OrderViewSet(viewsets.ModelViewSet):

@@ -101,3 +101,8 @@ class TicketSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('seat exceeds seats_in_row')
 
         return attrs
+
+
+class BookSeatSerializer(serializers.Serializer):
+    row = serializers.IntegerField(min_value=1)
+    seat = serializers.IntegerField(min_value=1)
