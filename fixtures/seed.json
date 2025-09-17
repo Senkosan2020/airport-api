@@ -1,0 +1,48 @@
+[
+  {
+    "model": "airport.airport",
+    "pk": 1,
+    "fields": { "name": "Boryspil", "closest_big_city": "Kyiv" }
+  },
+  {
+    "model": "airport.airport",
+    "pk": 2,
+    "fields": { "name": "Lviv Danylo Halytskyi", "closest_big_city": "Lviv" }
+  },
+  {
+    "model": "airport.route",
+    "pk": 1,
+    "fields": { "source": 1, "destination": 2, "distance": 468 }
+  },
+  {
+    "model": "airport.airplanetype",
+    "pk": 1,
+    "fields": { "name": "Airbus A320" }
+  },
+  {
+    "model": "airport.airplane",
+    "pk": 1,
+    "fields": { "name": "UR-AAA", "rows": 30, "seats_in_row": 6, "airplane_type": 1 }
+  },
+  {
+    "model": "airport.crew",
+    "pk": 1,
+    "fields": { "first_name": "Olena", "last_name": "Ivanenko" }
+  },
+  {
+    "model": "airport.crew",
+    "pk": 2,
+    "fields": { "first_name": "Andrii", "last_name": "Shevchenko" }
+  },
+  {
+    "model": "airport.flight",
+    "pk": 1,
+    "fields": {
+      "route": 1,
+      "airplane": 1,
+      "departure_time": "2025-09-20T08:00:00Z",
+      "arrival_time": "2025-09-20T10:00:00Z",
+      "crews": [1, 2]
+    }
+  }
+]
