@@ -14,19 +14,22 @@ from pathlib import Path
 from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-change-me")
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", "0") == "1"
+DEBUG = os.getenv('DJANGO_DEBUG', '0') == '1'
 
 ALLOWED_HOSTS = [
-    h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    h.strip() for h in os.getenv(
+        'DJANGO_ALLOWED_HOSTS',
+        '127.0.0.1,localhost'
+    ).split(',')
     if h.strip()
 ]
 
@@ -80,24 +83,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-def _env(k: str) -> str:
-    return (os.getenv(k) or "").strip()
+def _env(key2: str) -> str:
+    return (os.getenv(key2) or '').strip()
 
-DB_ENGINE = (_env("DB_ENGINE") or "django.db.backends.sqlite3").strip()
+
+DB_ENGINE = (_env('DB_ENGINE') or 'django.db.backends.sqlite3').strip()
 DB_NAME = (
-    (_env("DB_NAME") or "").strip()
-    or (_env("SQLITE_PATH") or "").strip()
-    or str((BASE_DIR / (_env("SQLITE_NAME") or "db.sqlite3")).resolve())
+    (_env('DB_NAME') or '').strip()
+    or (_env('SQLITE_PATH') or '').strip()
+    or str((BASE_DIR / (_env('SQLITE_NAME') or 'db.sqlite3')).resolve())
 )
 
 DATABASES = {
-    "default": {
-        "ENGINE": DB_ENGINE,
-        "NAME": DB_NAME,
-        "USER": (_env("DB_USER") or "").strip(),
-        "PASSWORD": (_env("DB_PASSWORD") or "").strip(),
-        "HOST": (_env("DB_HOST") or "localhost").strip(),
-        "PORT": (_env("DB_PORT") or "5432").strip(),
+    'default': {
+        'ENGINE': DB_ENGINE,
+        'NAME': DB_NAME,
+        'USER': (_env('DB_USER') or '').strip(),
+        'PASSWORD': (_env('DB_PASSWORD') or '').strip(),
+        'HOST': (_env('DB_HOST') or 'localhost').strip(),
+        'PORT': (_env('DB_PORT') or '5432').strip(),
     }
 }
 
@@ -107,16 +111,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.'
+                'password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.'
+                'password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.'
+                'password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.'
+                'password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -146,12 +154,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
