@@ -25,6 +25,14 @@ from .serializers import (
     RouteSerializer,
     TicketSerializer,
     BookSeatSerializer,
+    SeatMapResponseSerializer,
+    BookingResponseSerializer,
+)
+
+from drf_spectacular.utils import (
+    OpenApiExample,
+    OpenApiResponse,
+    extend_schema,
 )
 
 
@@ -82,6 +90,28 @@ class FlightViewSet(viewsets.ModelViewSet):
     ]
     ordering_fields = ['departure_time', 'arrival_time', 'id']
 
+    @extend_schema(
+        responses=OpenApiResponse(
+            response=SeatMapResponseSerializer,
+            description='Seat map for a given flight',
+            examples=[
+                OpenApiExample(
+                    'Seat map example',
+                    value={
+                        'flight': 1,
+                        'rows': 30,
+                        'seats_in_row': 6,
+                        'seat_map': [
+                            {'row': 1, 'seats': [
+                                {'row': 1, 'seat': 1, 'taken': False},
+                                {'row': 1, 'seat': 2, 'taken': True},
+                            ]},
+                        ],
+                    },
+                ),
+            ],
+        )
+    )
     @action(detail=True, methods=['get'], url_path='seats')
     def seats(self, request, pk=None):
         flight = self.get_object()
@@ -111,6 +141,39 @@ class FlightViewSet(viewsets.ModelViewSet):
             'seat_map': seat_map,
         })
 
+    @extend_schema(
+        request=BookSeatSerializer,
+        responses={
+            201: OpenApiResponse(
+                response=BookingResponseSerializer,
+                description='Seat successfully booked',
+                examples=[
+                    OpenApiExample(
+                        'Booking created',
+                        value={
+                            'order': 10,
+                            'flight': 1,
+                            'ticket': {'id': 55, 'row': 5, 'seat': 3},
+                        },
+                    ),
+                ],
+            ),
+            400: OpenApiResponse(
+                description='Invalid input or seat already taken',
+                examples=[
+                    OpenApiExample(
+                        'Seat taken',
+                        value={'detail': 'seat already taken for this flight'},
+                    ),
+                    OpenApiExample(
+                        'Out of capacity',
+                        value={'detail': 'row/seat exceeds airplane capacity'},
+                    ),
+                ],
+            ),
+            401: OpenApiResponse(description='Authentication required'),
+        },
+    )
     @action(
         detail=True,
         methods=['post'],

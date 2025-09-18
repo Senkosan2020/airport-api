@@ -106,3 +106,33 @@ class TicketSerializer(serializers.ModelSerializer):
 class BookSeatSerializer(serializers.Serializer):
     row = serializers.IntegerField(min_value=1)
     seat = serializers.IntegerField(min_value=1)
+
+
+class SeatInfoSerializer(serializers.Serializer):
+    row = serializers.IntegerField()
+    seat = serializers.IntegerField()
+    taken = serializers.BooleanField()
+
+
+class SeatRowSerializer(serializers.Serializer):
+    row = serializers.IntegerField()
+    seats = SeatInfoSerializer(many=True)
+
+
+class SeatMapResponseSerializer(serializers.Serializer):
+    flight = serializers.IntegerField()
+    rows = serializers.IntegerField()
+    seats_in_row = serializers.IntegerField()
+    seat_map = SeatRowSerializer(many=True)
+
+
+class TicketShortSerializer(serializers.Serializer):
+    id = serializers.IntegerField()  # noqa: VNE003
+    row = serializers.IntegerField()
+    seat = serializers.IntegerField()
+
+
+class BookingResponseSerializer(serializers.Serializer):
+    order = serializers.IntegerField()
+    flight = serializers.IntegerField()
+    ticket = TicketShortSerializer()
