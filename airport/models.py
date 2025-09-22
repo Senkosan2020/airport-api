@@ -31,7 +31,7 @@ class Route(models.Model):
                 name='uniq_route_src_dst',
             ),
             models.CheckConstraint(
-                check=~Q(source=F('destination')),
+                condition=~Q(source=F('destination')),
                 name='route_src_ne_dst',
             ),
         ]
@@ -87,7 +87,7 @@ class Flight(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=Q(arrival_time__gt=F('departure_time')),
+                condition=Q(arrival_time__gt=F('departure_time')),
                 name='flight_arrival_after_departure',
             ),
         ]
