@@ -19,8 +19,6 @@ Built with DRF, JWT auth, filtering, pagination, and OpenAPI docs via drf-specta
 
 ## Setup (local, SQLite)
 ```bash
-git clone <your-repo-url> airport-api
-cd airport-api
 
 python -m venv .venv
 . .venv/Scripts/activate  # Windows PowerShell
