@@ -12,6 +12,37 @@ Built with DRF, JWT auth, filtering, pagination, and OpenAPI docs via drf-specta
   - `GET /api/flights/{id}/seats/` — seat map
   - `POST /api/flights/{id}/book/` — book a seat (atomic, unique per flight)
 
+## Screenshots
+
+> All screenshots are taken from the Browsable API and docs (local run).
+
+### Database schema
+![DB schema](./docs/db_schema.png)
+
+### Browsable API
+![API root](./docs/screen-api-root.png)
+*Browsable API root (`/api/`).*
+
+![Airports list](./docs/screen-airports-list.png)
+*Airports list with pagination.*
+
+![Airport detail](./docs/screen-airport-detail.png)
+*Airport detail page.*
+
+![Flights list](./docs/screen-flights-list.png)
+*Flights list with filtering/ordering.*
+
+### Custom endpoints
+![Flight seats](./docs/screen-flight-seats.png)
+*GET `/api/flights/{id}/seats/` seat map.*
+
+### API Docs & Admin
+![Swagger UI](./docs/screen-swagger.png)
+*Swagger UI (`/api/docs/`).*
+
+![Redoc](./docs/screen-redoc.png)
+*Redoc (`/api/redoc/`).*
+
 ## Requirements
 - Python 3.12+
 - pip, virtualenv
