@@ -48,6 +48,16 @@ Built with DRF, JWT auth, filtering, pagination, and OpenAPI docs via drf-specta
 - pip, virtualenv
 - (Optional) Docker for PostgreSQL
 
+## Docker (PostgreSQL)
+
+```bash
+# start (build images and run containers)
+docker compose up --build
+
+# stop
+docker compose down
+```
+
 ## Setup (local, SQLite)
 ```bash
 
